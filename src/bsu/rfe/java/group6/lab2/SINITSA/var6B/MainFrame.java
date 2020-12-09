@@ -15,7 +15,8 @@ public class MainFrame extends JFrame {
     private static final int HEIGHT = 320;
 
     private static double mem1;
-    
+    private static double mem2;
+    private static double mem3;
 
     private JTextField textFieldX;
     private JTextField textFieldY;
@@ -28,11 +29,12 @@ public class MainFrame extends JFrame {
 
     private ButtonGroup radioButtons = new ButtonGroup();
     private Box hboxFormulaType = Box.createHorizontalBox();
+    private ButtonGroup radioButtons2 = new ButtonGroup();
     Box hboxVariablesType = Box.createHorizontalBox();
 
 
     private int formulaId = 1;
-    
+    private int variableId = 1;
 
     public Double calculate1(Double x, Double y, Double z) {
         return Math.pow((Math.exp(Math.pow(1+z,2)+ Math.cos(Math.pow(y,3)*Math.PI))),0.25)/Math.pow(Math.cos(Math.pow(Math.E,x))+Math.sqrt(1/x)+Math.pow(Math.E,x*x),Math.sin(x));
@@ -55,7 +57,18 @@ public class MainFrame extends JFrame {
         hboxFormulaType.add(button);
     }
     
-   
+    private void addRadioButton2(String buttonName, final int variableId) {
+        JRadioButton button2 = new JRadioButton(buttonName);
+        button2.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent ev) {
+                MainFrame.this.variableId = variableId;
+                JButton imagePane = new JButton();
+                imagePane.updateUI();
+            }
+        });
+        radioButtons2.add(button2);
+        hboxVariablesType.add(button2);
+    }
 
     public MainFrame()   {
         super("Вычисление формулы");
@@ -73,17 +86,34 @@ public class MainFrame extends JFrame {
 
 
         hboxVariablesType.add(Box.createHorizontalGlue());
-        
+        addRadioButton2("Пер. 1", 1);
 
         textFieldMem1 = new JTextField("0", 15);
         textFieldMem1.setMaximumSize(textFieldMem1.getPreferredSize());
         hboxVariablesType.add(Box.createHorizontalStrut(10));
         hboxVariablesType.add(textFieldMem1);
         textFieldMem1.setEditable(false);
+
+
+        addRadioButton2("Пер. 2", 2);
+
+        textFieldMem2 = new JTextField("0", 15);
+        textFieldMem2.setMaximumSize(textFieldMem2.getPreferredSize());
         hboxVariablesType.add(Box.createHorizontalStrut(10));
-   
+        hboxVariablesType.add(textFieldMem2);
+        textFieldMem2.setEditable(false);
+
+
+        addRadioButton2("Пер. 3", 3);
+
+        textFieldMem3 = new JTextField("0", 15);
+        textFieldMem3.setMaximumSize(textFieldMem3.getPreferredSize());
+        hboxVariablesType.add(Box.createHorizontalStrut(10));
+        hboxVariablesType.add(textFieldMem3);
+        textFieldMem3.setEditable(false);
 
         
+        radioButtons2.setSelected(radioButtons2.getElements().nextElement().getModel(), true);
         hboxVariablesType.add(Box.createHorizontalGlue());
         hboxVariablesType.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 
@@ -135,6 +165,8 @@ public class MainFrame extends JFrame {
                     Double y = Double.parseDouble(textFieldY.getText());
                     Double z = Double.parseDouble(textFieldZ.getText());
                     mem1 = Double.parseDouble(textFieldMem1.getText());
+                    mem2 = Double.parseDouble(textFieldMem2.getText());
+                    mem3 = Double.parseDouble(textFieldMem3.getText());
                     Double result;
                     if (formulaId == 1)
                         result = calculate1(x, y, z);
@@ -151,10 +183,19 @@ public class MainFrame extends JFrame {
         JButton buttonDel = new JButton("MC");
         buttonDel.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ev) {
-                
+                if (variableId == 1) {
                     mem1 = 0;
                     textFieldMem1.setText(String.valueOf(mem1));
-               
+                }
+                if (variableId == 2) {
+                    mem2 = 0;
+                    textFieldMem2.setText(String.valueOf(mem2));
+                }
+                if (variableId == 3) {
+                    mem3 = 0;
+                    textFieldMem3.setText(String.valueOf(mem3));
+                }
+
             }
         });
 
@@ -166,12 +207,24 @@ public class MainFrame extends JFrame {
                     Double y = Double.parseDouble(textFieldY.getText());
                     Double z = Double.parseDouble(textFieldZ.getText());
                     mem1 = Double.parseDouble(textFieldMem1.getText());
-                    
+                    mem2 = Double.parseDouble(textFieldMem2.getText());
+                    mem3 = Double.parseDouble(textFieldMem3.getText());
                     Double result;
+                    if (variableId == 1) {
                         if (formulaId == 1) result = mem1 + calculate1(x, y, z);
                         else result = mem1 + calculate2(x, y, z);
                         textFieldMem1.setText(String.valueOf(result));
-                   
+                    }
+                    if (variableId == 2) {
+                        if (formulaId == 1) result = mem2 + calculate1(x, y, z);
+                        else result = mem2 + calculate2(x, y, z);
+                        textFieldMem2.setText(result.toString());
+                    }
+                    if (variableId == 3) {
+                        if (formulaId == 1) result = mem3 + calculate1(x, y, z);
+                        else result = mem3 + calculate2(x, y, z);
+                        textFieldMem3.setText(result.toString());
+                    }
                 } catch (NumberFormatException ex) {
                     JOptionPane.showMessageDialog(MainFrame.this, "Ошибка в формате записи числа с плавающей точкой",
                             "Ошибочный формат числа", JOptionPane.WARNING_MESSAGE);
@@ -189,7 +242,10 @@ public class MainFrame extends JFrame {
                 textFieldResult.setText("0");
                 mem1 = 0;
                 textFieldMem1.setText(String.valueOf(mem1));
-                
+                mem2 = 0;
+                textFieldMem2.setText(String.valueOf(mem2));
+                mem3 = 0;
+                textFieldMem3.setText(String.valueOf(mem3));
             }
         });
 
@@ -216,13 +272,12 @@ public class MainFrame extends JFrame {
         Box contentBox = Box.createVerticalBox();
         contentBox.add(Box.createVerticalGlue()) ;     
         contentBox.add(hboxFormulaType);
-        contentBox.add(hboxButtonsM);
-
         contentBox.add(hboxVariablesType);
         contentBox.add(hboxVariables);
         contentBox.add(hboxResult);
-        
+        contentBox.add(hboxButtonsM);
         contentBox.add(hboxButtons);
+        contentBox.add(hboxButtonsM);
         contentBox.add(Box.createVerticalGlue());
         getContentPane().add(contentBox, BorderLayout.CENTER);
 
