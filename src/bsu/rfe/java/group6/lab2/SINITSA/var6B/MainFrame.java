@@ -275,7 +275,6 @@ public class MainFrame extends JFrame {
         contentBox.add(hboxVariablesType);
         contentBox.add(hboxVariables);
         contentBox.add(hboxResult);
-        contentBox.add(hboxButtonsM);
         contentBox.add(hboxButtons);
         contentBox.add(hboxButtonsM);
         contentBox.add(Box.createVerticalGlue());
